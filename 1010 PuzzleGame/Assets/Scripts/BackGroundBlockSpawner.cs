@@ -8,19 +8,19 @@ public class BackGroundBlockSpawner : MonoBehaviour
     [SerializeField] private int orderInLayer;
 
     private Vector2 blockCount = new Vector2(10, 10);
-    private Vector2 blockHalf = new Vector2(0.5f, 0.5f);
+    private float blockHalf = 0.5f;
     // Start is called before the first frame update
     private void Awake()
     {
-        for(int y = 0; y < blockCount.y; y++)
+        for(int y = 0; y < blockCount.y; ++y)
         {
-            for(int x = 0; x < blockCount.x; x++)
+            for(int x = 0; x < blockCount.x; ++x)
             {
-                float px = -blockCount.x * 0.5f + blockHalf.x + x;
-                float py = blockCount.y * 0.5f - blockHalf.y - y;
+                float px = (-(blockCount.x / 2) + blockHalf) + x;
+                float py = ((blockCount.y / 2) - blockHalf) -y;
                 Vector3 position = new Vector3(px, py, 0);
 
-                GameObject clone = Instantiate(blockPrefab, position, Quaternion.identity);
+                GameObject clone = Instantiate(blockPrefab, position, Quaternion.identity, transform);
                 clone.GetComponent<SpriteRenderer>().sortingOrder = orderInLayer;
             }
         }
