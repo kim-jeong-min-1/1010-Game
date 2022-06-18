@@ -35,10 +35,14 @@ public class DragBlock : MonoBehaviour
 
     private void OnMouseUp()
     {
-        StopCoroutine(sizeUp);
-        sizeDown = StartCoroutine(BlockTo(Vector3.one * 0.5f, returnDuration, false));
+        float x = Mathf.RoundToInt(transform.position.x - BlockCount.x % 2 * 0.5f) + BlockCount.x % 2 * 0.5f;
+        float y = Mathf.RoundToInt(transform.position.y - BlockCount.y % 2 * 0.5f) + BlockCount.y % 2 * 0.5f;
+        transform.position = new Vector3(x, y, 0);
 
-        StartCoroutine(BlockTo(transform.parent.position, returnDuration, true));
+        //StopCoroutine(sizeUp);
+        //sizeDown = StartCoroutine(BlockTo(Vector3.one * 0.5f, returnDuration, false));
+
+        //StartCoroutine(BlockTo(transform.parent.position, returnDuration, true));
     }
     #endregion
 
