@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 using Random = UnityEngine.Random;
 
 public enum CellState
@@ -10,7 +11,6 @@ public enum CellState
     Fill,
     line
 }
-
 public class GameManager : MonoBehaviour
 {
     public static GameManager Inst { get; set; }
@@ -30,12 +30,10 @@ public class GameManager : MonoBehaviour
     private int score = 0;
     public int Score
     {
-        get
-        {
+        get {
             return score;
         }
-        set
-        {
+        set {
             score = value;
             ScoreText.text = $"{score}";
         }
@@ -134,10 +132,10 @@ public class GameManager : MonoBehaviour
         {
             for (int y = 0; y < CELL_SIZE; y++)
             {
-                if(Cell[x,y] == (int)CellState.line)
-                {                   
-                    StartCoroutine(BlockMove(GetCell(x, y), Vector3.zero, false, 0.25f));
-                    StartCoroutine(CellRecycling(GetCell(x,y)));
+                if(Cell[x, y] == (int)CellState.line)
+                {
+                    Cell[x, y] = (int)CellState.Empty;
+                    StartCoroutine(BlockMove(GetCell(x, y), Vector3.zero, false, 0.2f, CellRecycling));
                 }
             }
         }
@@ -157,11 +155,7 @@ public class GameManager : MonoBehaviour
                 if (PutUnable(BlockSpawnPoints[i].GetComponentInChildren<Block>().ShapePos)) dieCheck++;   
             }
         }
-
-        if (count == 0)
-        {
-            SpawnBlock(); return;
-        }          
+        if (count == 0) SpawnBlock();
         else if (count == dieCheck) Die();
     }
 
@@ -203,7 +197,6 @@ public class GameManager : MonoBehaviour
     //블럭 스폰
     void SpawnBlock()
     {
-
         for (int i = 0; i < BlockSpawnPoints.Length; i++)
         {
             int Rand = Random.Range(0, BlockObj.Length);
@@ -213,6 +206,8 @@ public class GameManager : MonoBehaviour
 
             clone.GetComponent<Block>().SetUP(BlockSpawnPoints[i].position, 0.5f);
         }
+
+        Invoke("CheckLogic", 0.05f);
     }
 
     //Cell들을 배열에 순차적으로 담기
@@ -227,7 +222,7 @@ public class GameManager : MonoBehaviour
     }
 
     //부드러운 움직임
-    public IEnumerator BlockMove(GameObject obj, Vector3 endPos, bool isMove, float time)
+    public IEnumerator BlockMove(GameObject obj, Vector3 endPos, bool isMove, float time, Action<GameObject> CallBack = null)
     {
         Vector3 startPos;
         startPos = (isMove) ? obj.transform.position : obj.transform.localScale; 
@@ -245,11 +240,11 @@ public class GameManager : MonoBehaviour
 
             yield return null;
         }
+        CallBack?.Invoke(obj);
     }
 
-    private IEnumerator CellRecycling(GameObject Cell)
+    void CellRecycling(GameObject Cell)
     {
-        yield return new WaitForSeconds(0.25f);
         Cell.transform.localScale = Vector3.one * 0.9f;
         Cell.GetComponent<SpriteRenderer>().color = CellColor;
     }
