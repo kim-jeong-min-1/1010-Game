@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace JM.Tweening
@@ -8,11 +7,12 @@ namespace JM.Tweening
     {
         public static void DoMove(this Transform transform, Vector3 endPos, float time)
         {
-            
+            Tween tween = new Tween(transform, endPos, time);
+            tween.DoTween();
         }
     }
 
-    public class Tween : MonoBehaviour
+    public class Tween
     {
         AnimationCurve moveCurve;
 
@@ -29,8 +29,7 @@ namespace JM.Tweening
 
         public void DoTween()
         {
-
-            StartCoroutine(DOTweening(targetTransform, endPosition, duration));
+            TweenStarter.Instance.StartCoroutine(DOTweening(targetTransform, endPosition, duration));
         }
 
         private IEnumerator DOTweening(Transform target, Vector3 endPos, float time)
@@ -39,14 +38,36 @@ namespace JM.Tweening
             float current = 0;
             float percent = 0;
 
-            while(percent < 1)
+            while (percent < 1)
             {
                 current += Time.deltaTime;
                 percent = current / time;
 
-                target.position = Vector3.Lerp(startPos, endPos, moveCurve.Evaluate(percent));
-                yield return null;
+                target.position = Vector3.Lerp(startPos, endPos, percent);
+                yield return new WaitForFixedUpdate();
             }
+        }
+    }
+
+    public class TweenStarter : MonoBehaviour
+    {
+        private static MonoBehaviour instance;
+        public static MonoBehaviour Instance
+        {
+            get
+            {
+                if (!instance)
+                {
+                    instance = new GameObject("[JMTween]").AddComponent<TweenStarter>();
+                    DontDestroyOnLoad(instance.gameObject);
+                }
+                return instance;
+            }
+        }
+
+        public new static Coroutine StartCoroutine(IEnumerator coroutine)
+        {
+            return Instance.StartCoroutine(coroutine);
         }
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using Random = UnityEngine.Random;
+using JM.Tweening;
 
 public enum CellState
 {
@@ -40,6 +41,7 @@ public class GameManager : MonoBehaviour
     } 
     void Awake()
     {
+        transform.DoMove(new Vector3(0, 0, 1), 1f);
         Inst = this;
         SpawnBlock();
         LoadCells();
