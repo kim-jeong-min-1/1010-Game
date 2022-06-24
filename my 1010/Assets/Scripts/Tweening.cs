@@ -5,7 +5,7 @@ namespace JM.Tweening
 {
     public static class Tweening
     {
-        public static void DoMove(this Transform transform, Vector3 endPos, float time)
+        public static void JMMove(this Transform transform, Vector3 endPos, float time)
         {
             Tween tween = new Tween(transform, endPos, time);
             tween.DoTween();

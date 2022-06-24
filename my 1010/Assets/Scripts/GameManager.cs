@@ -110,6 +110,7 @@ public class GameManager : MonoBehaviour
             int HorizontalCount = 0;
             int VerticalCount = 0;
 
+
             for (int x = 0; x < CELL_SIZE; x++)
             {
                 if (Cell[x, y] == (int)CellState.Fill) HorizontalCount++;
