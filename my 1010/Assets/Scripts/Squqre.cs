@@ -8,7 +8,7 @@ public class Squqre : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        transform.DoMove(transform.position + new Vector3(0, -10, 0), 100f);
+        transform.JMMove(transform.position + new Vector3(0, -10, 0), 1f);
     }
 
     // Update is called once per frame
