@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class Block : MonoBehaviour
 {
-    public Vector3[] ShapePos;
-    private Vector3 BlockPos;
+    public Vector3[] shapePos;
+    private Vector3 blockPos;
     Coroutine sizeUp, sizeDown;
 
-    private void Awake()
+    public void SetBlock()
     {
-        BlockPos = transform.parent.position;
+        blockPos = transform.parent.position;
+        shapePos = new Vector3[transform.childCount];
 
-        ShapePos = new Vector3[transform.childCount];
         for (int i = 0; i < transform.childCount; i++)
-            ShapePos[i] = transform.GetChild(i).localPosition;      
+            shapePos[i] = transform.GetChild(i).localPosition;
     }
 
     //블럭 등장 애니메이션
@@ -45,7 +45,7 @@ public class Block : MonoBehaviour
         SortingOrder(1);
         transform.position = new Vector3(x, y, 0);
 
-        GameManager.Inst.PutPuzzle(this, ShapePos, (transform.parent.position + transform.localPosition));
+        GameManager.Inst.PutPuzzle(this, shapePos, (transform.parent.position + transform.localPosition));
     }
     #endregion
 
@@ -54,12 +54,13 @@ public class Block : MonoBehaviour
     {
         StopCoroutine(sizeUp);
         sizeDown = StartCoroutine(GameManager.Inst.BlockMove(this.gameObject, Vector3.one * 0.5f, false, 0.2f));
-        StartCoroutine(GameManager.Inst.BlockMove(this.gameObject, BlockPos, true, 0.2f));
+        StartCoroutine(GameManager.Inst.BlockMove(this.gameObject, blockPos, true, 0.2f));
     }  
     
     //블럭삭제
     public void DeleteBlock()
     {
+        transform.parent = null;
         Destroy(gameObject);
     }
 

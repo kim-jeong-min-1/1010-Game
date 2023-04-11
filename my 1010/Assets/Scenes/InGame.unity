@@ -461,7 +461,7 @@ GameObject:
   m_Component:
   - component: {fileID: 73378854}
   m_Layer: 0
-  m_Name: BoardFoward
+  m_Name: BoardFront
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10547,31 +10547,30 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  BlockSpawnPoints:
+  blockSpawnPoints:
   - {fileID: 1794835012}
   - {fileID: 1566203842}
   - {fileID: 291995104}
-  BlockObj:
-  - {fileID: 363340314953155759, guid: ed6aaf7014c6670449629550f65799d7, type: 3}
-  - {fileID: 408571749890839156, guid: 1268cc99f0b66194b844b91f1829cc31, type: 3}
-  - {fileID: 8631570586916534368, guid: a490b95fe92baf74482dea2a34c8dfb4, type: 3}
-  - {fileID: 3491771353062478429, guid: 8e4d99ac86065074fa93e49242132068, type: 3}
-  - {fileID: 4988835310333434266, guid: 1756d306c091520429cf7aa78b006571, type: 3}
-  - {fileID: 2938196302115068008, guid: d220661fbcc3c1040a9c035c36ceb77a, type: 3}
-  - {fileID: 8971091766588984520, guid: 2923c7adff9126e48a57164c3ba09ccf, type: 3}
-  - {fileID: 141816517581798498, guid: 3fd9d673575d4274e8d54ba457b46e23, type: 3}
-  - {fileID: 218493287218735543, guid: cc9f218caffddb1429a34a32c88c864d, type: 3}
-  - {fileID: 596717791566083968, guid: 5d16147fa5768d44cbf489b005d78d0e, type: 3}
-  - {fileID: 2045484138898863144, guid: f6c30a0e20a7f524c82382873504603f, type: 3}
-  - {fileID: 8780296624279248301, guid: da871e7bb0ee14a4381df8d791a61c4c, type: 3}
-  - {fileID: 521054919314890347, guid: 47f36b7cebcb43e42b691f84128598b5, type: 3}
-  - {fileID: 7893482563286258296, guid: b767a453e9924a94289cd25d1e22215c, type: 3}
-  - {fileID: 5114910679109319777, guid: 219062017b867f144b5e345c09bf727d, type: 3}
-  - {fileID: 3366432944192656715, guid: 95d10b901cbb17e41818e7c46e6227c3, type: 3}
-  - {fileID: 3167854953960544047, guid: bcc41d3104caa464d8429d459b1d77bf, type: 3}
-  - {fileID: 3431919360847927534, guid: aa11902ac0e9feb408d17f33bc334845, type: 3}
-  - {fileID: 4395549136334600857, guid: 21a95a5b5fa1cb049b9f5e07723e48e8, type: 3}
-  BorderFront: {fileID: 73378854}
+  blockObj:
+  - {fileID: 2938196302115068009, guid: d220661fbcc3c1040a9c035c36ceb77a, type: 3}
+  - {fileID: 408571749890839157, guid: 1268cc99f0b66194b844b91f1829cc31, type: 3}
+  - {fileID: 596717791566083969, guid: 5d16147fa5768d44cbf489b005d78d0e, type: 3}
+  - {fileID: 5746389252114507329, guid: a490b95fe92baf74482dea2a34c8dfb4, type: 3}
+  - {fileID: 2223880292776173575, guid: f6c30a0e20a7f524c82382873504603f, type: 3}
+  - {fileID: 6121646851450589064, guid: 95d10b901cbb17e41818e7c46e6227c3, type: 3}
+  - {fileID: 1627106532096909416, guid: 21a95a5b5fa1cb049b9f5e07723e48e8, type: 3}
+  - {fileID: 3491771353062478418, guid: 8e4d99ac86065074fa93e49242132068, type: 3}
+  - {fileID: 2855657044928472152, guid: 1756d306c091520429cf7aa78b006571, type: 3}
+  - {fileID: 1019871416658779813, guid: da871e7bb0ee14a4381df8d791a61c4c, type: 3}
+  - {fileID: 3251552223902664249, guid: 3fd9d673575d4274e8d54ba457b46e23, type: 3}
+  - {fileID: 7808980239297178654, guid: 2923c7adff9126e48a57164c3ba09ccf, type: 3}
+  - {fileID: 8278629887593693252, guid: aa11902ac0e9feb408d17f33bc334845, type: 3}
+  - {fileID: 968789287292587053, guid: b767a453e9924a94289cd25d1e22215c, type: 3}
+  - {fileID: 4680956376240283041, guid: 47f36b7cebcb43e42b691f84128598b5, type: 3}
+  - {fileID: 363340314953155758, guid: ed6aaf7014c6670449629550f65799d7, type: 3}
+  - {fileID: 3167854953960544046, guid: bcc41d3104caa464d8429d459b1d77bf, type: 3}
+  - {fileID: 5269486296784910764, guid: cc9f218caffddb1429a34a32c88c864d, type: 3}
+  - {fileID: 2830242448549418085, guid: 219062017b867f144b5e345c09bf727d, type: 3}
   cellObject:
   - {fileID: 0}
   - {fileID: 0}
@@ -10673,8 +10672,9 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  ScoreText: {fileID: 1207644295}
-  DieText: {fileID: 415341016}
+  borderFront: {fileID: 73378854}
+  scoreText: {fileID: 1207644295}
+  dieText: {fileID: 415341016}
 --- !u!4 &1240669899
 Transform:
   m_ObjectHideFlags: 0

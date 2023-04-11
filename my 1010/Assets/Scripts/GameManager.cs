@@ -14,36 +14,39 @@ public enum CellState
 public class GameManager : MonoBehaviour
 {
     public static GameManager Inst { get; set; }
-    const int CELL_SIZE = 10;
+
+    private const int CELL_SIZE = 10;
+    private int[,] Cell = new int[CELL_SIZE, CELL_SIZE];
 
     [SerializeField] private AnimationCurve movementCurve;
-    [SerializeField] Transform[] BlockSpawnPoints;
-    [SerializeField] GameObject[] BlockObj;
-    public int[,] Cell = new int[CELL_SIZE, CELL_SIZE];
+    [SerializeField] private Transform[] blockSpawnPoints;
+    [SerializeField] private Block[] blockObj;
 
-    [SerializeField] private Transform BorderFront;
     [SerializeField] private GameObject[] cellObject = new GameObject[100];
-    [SerializeField] private Text ScoreText;
-    [SerializeField] private GameObject DieText;
+    [SerializeField] private Transform borderFront;
+    [SerializeField] private Text scoreText;
+    [SerializeField] private GameObject dieText;
 
-    private Color CellColor;
+    private Color defaultCellColor;
     private int score = 0;
     public int Score
     {
-        get {
+        get
+        {
             return score;
         }
-        set {
+        set
+        {
             score = value;
-            ScoreText.text = $"{score}";
+            scoreText.text = $"{score}";
         }
-    } 
-    void Awake()
+    }
+    void Awake() => Inst = this;
+    private void Start()
     {
-        Inst = this;
-        SpawnBlock();
         LoadCells();
-        CellColor = cellObject[0].GetComponent<SpriteRenderer>().color;
+        SpawnBlock();
+        defaultCellColor = cellObject[0].GetComponent<SpriteRenderer>().color;
     }
 
     #region 블럭 처리
@@ -69,11 +72,11 @@ public class GameManager : MonoBehaviour
     #endregion
 
     //블럭을 놓았을 때 처리
-    public void PutPuzzle(Block block, Vector3[] ShapeCell, Vector3 lastPos)
+    public void PutPuzzle(Block block, Vector3[] shapeCell, Vector3 lastPos)
     {
-        for (int i = 0; i < ShapeCell.Length; i++)
+        for (int i = 0; i < shapeCell.Length; i++)
         {
-            Vector3 Pos = ShapeCell[i] + lastPos;
+            Vector3 Pos = shapeCell[i] + lastPos;
             if (OutCheck((int)Pos.x, (int)Pos.y))
             {
                 block.BlockReturn();
@@ -81,25 +84,25 @@ public class GameManager : MonoBehaviour
             }
             if (BlockCollision((int)Pos.x, (int)Pos.y))
             {
-                block.BlockReturn(); 
+                block.BlockReturn();
                 return;
             }
         }
 
-        for (int i = 0; i < ShapeCell.Length; i++)
+        for (int i = 0; i < shapeCell.Length; i++)
         {
-            Vector3 Pos = ShapeCell[i] + lastPos;
-            print("채워짐");
+            Vector3 Pos = shapeCell[i] + lastPos;
+            
             Cell[(int)Pos.x, (int)Pos.y] = (int)CellState.Fill;
             GetCell((int)Pos.x, (int)Pos.y).GetComponent<SpriteRenderer>().color =
                 block.gameObject.transform.GetChild(0).GetComponent<SpriteRenderer>().color;
         }
         block.DeleteBlock();
-        ChekcLine(ShapeCell.Length);
-        Invoke("CheckLogic", 0.25f);
+        ChekcLine(shapeCell.Length);
+        CheckLogic();
     }
 
-    void ChekcLine(int ShapeCount)
+    void ChekcLine(int shapeCount)
     {
         int line = 0;
         //한줄이 완성됬는지 체크
@@ -114,7 +117,7 @@ public class GameManager : MonoBehaviour
                 if (Cell[x, y] == (int)CellState.Fill) HorizontalCount++;
                 if (Cell[y, x] == (int)CellState.Fill) VerticalCount++;
 
-                if(HorizontalCount == 10)
+                if (HorizontalCount == 10)
                 {
                     line++;
                     for (int i = 0; i < CELL_SIZE; i++) Cell[i, y] = (int)CellState.line;
@@ -129,18 +132,18 @@ public class GameManager : MonoBehaviour
         }
 
         //파괴
-        for(int x = 0; x < CELL_SIZE; x++)
+        for (int x = 0; x < CELL_SIZE; x++)
         {
             for (int y = 0; y < CELL_SIZE; y++)
             {
-                if(Cell[x, y] == (int)CellState.line)
+                if (Cell[x, y] == (int)CellState.line)
                 {
                     Cell[x, y] = (int)CellState.Empty;
                     StartCoroutine(BlockMove(GetCell(x, y), Vector3.zero, false, 0.2f, CellRecycling));
                 }
             }
         }
-        Score += line * 10 + ShapeCount; 
+        Score += line * 10 + shapeCount;
     }
 
     //스폰된 블럭이 모두 배치되었는지 확인
@@ -148,12 +151,12 @@ public class GameManager : MonoBehaviour
     {
         int count = 0;
         int dieCheck = 0;
-        for (int i = 0; i < BlockSpawnPoints.Length; i++)
+        for (int i = 0; i < blockSpawnPoints.Length; i++)
         {
-            if (BlockSpawnPoints[i].childCount != 0)
+            if (blockSpawnPoints[i].childCount != 0)
             {
                 count++;
-                if (PutUnable(BlockSpawnPoints[i].GetComponentInChildren<Block>().ShapePos)) dieCheck++;   
+                if (PutUnable(blockSpawnPoints[i].GetComponentInChildren<Block>().shapePos)) dieCheck++;
             }
         }
         if (count == 0) SpawnBlock();
@@ -161,14 +164,14 @@ public class GameManager : MonoBehaviour
     }
 
     //모든 좌표중 해당 블럭이 들어갈 좌표가 있는 지 전체적으로 확인
-    bool PutUnable(Vector3[] ShapePos)
+    bool PutUnable(Vector3[] shapePos)
     {
         int Check = 0;
         for (int y = 0; y < CELL_SIZE; y++)
         {
             for (int x = 0; x < CELL_SIZE; x++)
             {
-                if (!UnableChecking(x, y, ShapePos)) Check++;
+                if (!UnableChecking(x, y, shapePos)) Check++;
             }
         }
         if (Check == 0) return true;
@@ -176,11 +179,11 @@ public class GameManager : MonoBehaviour
     }
 
     //인자로 받은 좌표에 해당 블럭이 들어갈 수 있는 지 체크
-    bool UnableChecking(int x, int y, Vector3[] ShapePos)
+    bool UnableChecking(int x, int y, Vector3[] shapePos)
     {
-        for (int i = 0; i < ShapePos.Length; i++)
+        for (int i = 0; i < shapePos.Length; i++)
         {
-            Vector3 SumPos = GetCell(x, y).transform.position + ShapePos[i];
+            Vector3 SumPos = GetCell(x, y).transform.position + shapePos[i];
 
             if (OutCheck((int)SumPos.x, (int)SumPos.y)) return true;
             if (BlockCollision((int)SumPos.x, (int)SumPos.y)) return true;
@@ -192,30 +195,29 @@ public class GameManager : MonoBehaviour
     void Die()
     {
         print("Die");
-        DieText.SetActive(true);
+        dieText.SetActive(true);
     }
 
     //블럭 스폰
     void SpawnBlock()
     {
-        for (int i = 0; i < BlockSpawnPoints.Length; i++)
+        for (int i = 0; i < blockSpawnPoints.Length; i++)
         {
-            int Rand = Random.Range(0, BlockObj.Length);
+            int Rand = Random.Range(0, blockObj.Length);
 
-            GameObject clone = Instantiate(BlockObj[Rand],
-                BlockSpawnPoints[i].position + new Vector3(10, 0, 0), Quaternion.identity, BlockSpawnPoints[i].transform);
-
-            clone.GetComponent<Block>().SetUP(BlockSpawnPoints[i].position, 0.5f);
+            Block block = Instantiate(blockObj[Rand],
+                blockSpawnPoints[i].position + new Vector3(10, 0, 0), Quaternion.identity, blockSpawnPoints[i].transform);
+            block.SetBlock();
+            block.GetComponent<Block>().SetUP(blockSpawnPoints[i].position, 0.5f);
         }
-
-        Invoke("CheckLogic", 0.05f);
+        CheckLogic();
     }
 
     //Cell들을 배열에 순차적으로 담기
     void LoadCells()
     {
         int num = 0;
-        foreach(Transform cell in BorderFront)
+        foreach (Transform cell in borderFront)
         {
             cellObject[num] = cell.gameObject;
             num++;
@@ -226,7 +228,7 @@ public class GameManager : MonoBehaviour
     public IEnumerator BlockMove(GameObject obj, Vector3 endPos, bool isMove, float time, Action<GameObject> CallBack = null)
     {
         Vector3 startPos;
-        startPos = (isMove) ? obj.transform.position : obj.transform.localScale; 
+        startPos = (isMove) ? obj.transform.position : obj.transform.localScale;
 
         float current = 0;
         float percent = 0;
@@ -244,9 +246,9 @@ public class GameManager : MonoBehaviour
         CallBack?.Invoke(obj);
     }
 
-    void CellRecycling(GameObject Cell)
+    void CellRecycling(GameObject cell)
     {
-        Cell.transform.localScale = Vector3.one * 0.9f;
-        Cell.GetComponent<SpriteRenderer>().color = CellColor;
+        cell.transform.localScale = Vector3.one * 0.9f;
+        cell.GetComponent<SpriteRenderer>().color = defaultCellColor;
     }
 }
